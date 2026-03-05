@@ -161,7 +161,7 @@ That's what Pragma aims to be. Not a replacement for Linux — Linux is extraord
 
 ## Status
 
-Early stage. Metal is furthest along — the FSP parameter catalog is live, the optimization framework is being built. The language and OS are in design. We're building in public because the firmware community has always worked that way, and the people most likely to help are the ones already live in this space.
+Early stage. Metal is furthest along — the FSP and AGESA parameter catalog is live, the optimization framework and language are being built. The OS is in design. We're building in public because the people most likely to help are the ones already living in these spaces.
 
 If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, we'd love to hear from you.
 
