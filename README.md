@@ -19,16 +19,37 @@ The companion project **[Firmware-Param-Catalog](https://github.com/albazzaztari
 
 Pragma is also a programming language designed to express kernel-level concepts in terms that read more like intent than implementation. The idea is that you shouldn't need to swim through millions of lines of C to understand or modify how your system behaves.
 
-The language is relaxed about the things that don't matter — delimiters, indentation rules, inlining conventions — and precise about the things that do. You can express high-level policy (
-if something == somethingElse then
-    x=5
-    skip
-else if something != somethingElse then
-    x=1
-else if something == nothing
-FREE<buf>
-// do something
-end if) or drop down to hardware-level specifics ("set CHA snoop throttle to medium on socket 0") in the same program.
+The language is relaxed about the things that don't matter — delimiters, indentation rules, inlining conventions — and precise about the things that do. Standard and Base Pragma are the same language; Base just adds memory and hardware primitives. You can write readable policy logic and hardware register writes in the same file:
+
+```
+// standard — readable policy logic
+constant int SNOOP_FULL    = 0
+constant int SNOOP_MEDIUM  = 1
+constant int SNOOP_REDUCED = 2
+
+function throttle_for(int temp_c) returns int
+  if temp_c < 70
+    return SNOOP_FULL
+  else if temp_c < 85
+    return SNOOP_MEDIUM
+  end if
+  return SNOOP_REDUCED
+end function
+
+// base — write result directly to hardware
+function apply(int level, int socket) returns void
+  int64 base = 0xFED10000
+  int64 reg  = base + (socket * 0x1000) + 0x80   // CHA snoop ctrl offset
+  mem<reg>   = level
+end function
+
+function main()
+  int socket = 0
+  int temp   = 82              // degrees C — read from MSR in practice
+  int level  = throttle_for(temp)
+  apply(level, socket)
+end function
+```
 
 The goal is to shrink the gap between systems programming and application development. If you're an admin or app developer who wants to understand what's under the hood, modify scheduling behavior, or add a custom IPC mechanism, you shouldn't need to become a kernel engineer first. You should be able to read the relevant part of the kernel and understand what it says.
 
