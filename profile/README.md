@@ -1,6 +1,6 @@
 # **Hardware Optimization - Language - Operating System**
 ---
-This is an attempt at making things as deeply configurable as possible.  I'm trying to take hardware optimization, a language for both high-level apps and low-level systems, and an operating system with more knobs that ever easily accessible, and put it into one single solution.  Way beyond overclocking, language that easily converts from and to and is able to be expressed well in each companion language, and an operating system that has userspace apps for changing IPC messaging methodology, process scheduling, I/O handling, network stack, and other things.  Everything linux can do and BSD and others.  All rolled up into one thing that you don't have to hassle an LLM about every time you want to change something.
+This is an attempt at making things as deeply configurable as possible.  I'm trying to take hardware optimization, a language for both high-level apps and low-level systems, and an operating system with more knobs that ever easily accessible, and put it into one single solution.  Going way beyond overclocking, building a language that easily converts from and to and is able to be expressed well in other companion languages, and an operating system that has userspace apps for changing IPC messaging methodology, process scheduling, I/O handling, network stack, and other things.  Everything linux can do and BSD and others.  All rolled up into one thing that you don't have to hassle an LLM about every time you want to change something.
 
 This all started with Claude Code and me getting back my interests in computers.  I left it when I was a kid but there were a few years from around 11-15 where I got every Sam's, O'Reilly's and other books I could grab from the bookstore.  I pretty much lived on the computer from day to night, stumbling through Linux, reading content on computing, and playing with tools I probably had no business playing with in the seedier days of pockets of backpage communities on IRC, telnet, and the like.  I never got much deeper than building simple programs and more than anything just editing scripts or programs I downloaded, most of the time even then just building binaries.  Later in college I got a formal introduction to programming and had no real issue with the class workloads. But I ended up leaving for years, just doing things at work from time to time.  I used it, so I didn't lose it, but I def didn't use it all the time.  
 
@@ -25,7 +25,9 @@ The companion project **[Firmware-Param-Catalog](https://github.com/albazzaztari
 
 Pragma is also a programming language designed to express kernel-level concepts in terms that read more like intent than implementation. The idea is that you shouldn't need to swim through millions of lines of C to understand or modify how your system behaves.
 
-The language is relaxed about the things that don't matter — delimiters, indentation rules, inlining conventions — and precise about the things that do. Standard and Base Pragma are the same language; Base just adds memory and hardware primitives. You can write readable policy logic and hardware register writes in the same file:
+The language is relaxed about the things that don't matter — delimiters, indentation rules, inlining conventions — and precise about the things that do. Standard and Base Pragma are the same language; Base just adds memory and hardware primitives. It lightly holds back the beginners to expose them to the necessities for 99% of them, and leaves the door open for them to take the lower road with more pain but more power. 
+
+You can write readable policy logic and hardware register writes in the same file:
 
 ```
 // standard — readable policy logic
@@ -59,13 +61,15 @@ end function
 
 The goal is to shrink the gap between systems programming and application development. If you're an admin or app developer who wants to understand what's under the hood, modify scheduling behavior, or add a custom IPC mechanism, you shouldn't need to become a kernel engineer first. You should be able to read the relevant part of the kernel and understand what it says.
 
+It also bundles safety frameworks that mathematically prove memory safety just like Rust, but without Rust's mandates. To top it off, it uses smart contracts hosted on the Ethereum blockhain that contain the source code of the mathematical proofing algorithm in a pipeline that pushes through code, rejects those that fail but if it passes produces a verifiable SHA-256 hash of the code for anyone to see. So not only can you show your code is safe, but you can verify anyone else's. Now the Rust crowd can rewrite try to rewrite the smart contract with 8x the bugs.
+
 ### 🖥️ The OS
 
 Pragma OS is a configurable kernel that loads Linux as a driver rather than treating it as the operating system.
 
-This is a deliberate architectural choice. Every alternative OS in history has faced the same wall: hardware compatibility. Linux has thousands of engineers and decades of work behind its driver ecosystem. Instead of reimplementing all of that (or accepting a fraction of hardware support), Pragma treats the Linux kernel as its I/O subsystem. Linux thinks it owns the hardware. Pragma sits above it and provides its own execution model, memory management, scheduling, and IPC — consuming Linux's capabilities through its existing interfaces without forking or reimplementing any of it.
+This is a deliberate architectural choice. Every alternative OS in history has faced the same wall: hardware compatibility. Linux has thousands of engineers and decades of work behind its driver ecosystem. Instead of reimplementing all of that or accepting a fraction of hardware support, Pragma treats the Linux kernel as its I/O subsystem. Linux thinks it owns the hardware. Pragma sits above it and provides its own execution model, memory management, scheduling, and IPC — consuming Linux's capabilities through its existing interfaces without forking or reimplementing any of it. And these things get pushed into userspace with tools that make configurability much more seamless.
 
-The result is a thin, configurable skeleton that gives you unified, easy-access control over settings that Linux today offers:
+The result is a thin, configurable skeleton that gives you one stop, easy-access control Linux today offers:
 
 **Process Management & Scheduling**
 - Scheduling algorithm selection and composition (CFS, EDF, priority-based, custom)
@@ -151,27 +155,31 @@ The result is a thin, configurable skeleton that gives you unified, easy-access 
 - Kernel live patching policies
 - Audit subsystem configuration
 
-These are all real knobs that exist in Linux today, scattered across sysctl, procfs, sysfs, kernel boot parameters, module parameters, and compile-time Kconfig options. Pragma's contribution is making them navigable, composable, and expressible in one coherent language instead of six different configuration mechanisms with six different syntaxes. 
-
-However, Linux can't hot-swap its own scheduler or memory manager while running without kexec or a reboot in most cases. Some things are runtime-tunable (sysctl), some require a reboot (boot parameters), some require recompilation (Kconfig). Pragma's value would be making ALL of them runtime-configurable through one interface and one language, 
+However, Linux can't hot-swap its own scheduler or memory manager while running without kexec or a reboot in most cases. Some things are runtime-tunable (sysctl), some require a reboot (boot parameters), some require recompilation (Kconfig). Pragma's value would be providing a single interface that's runtime-configurable. 
 
 ---
 
-## Why?
+## But you can already do a lot in Linux, right?
 
-Because if you look at something like the Linux kernel's [`net/`](https://elixir.bootlin.com/linux/v6.19.3/source/net) directory, you'll find ~70 subdirectories at the same level — Bluetooth sitting next to bridge sitting next to IPv4 sitting next to netfilter sitting next to CAN bus. Hardware-specific code, protocol families, filtering frameworks, and utility layers all mixed together with no navigable hierarchy. Not all of them apply to any given system. There's no way to say "show me only what's relevant to *my* hardware, running *these* protocols, using *this* filtering approach" and get a clean, scoped view of the code that actually matters.
+Sure, but if you look at something like the Linux kernel's [`net/`](https://elixir.bootlin.com/linux/v6.19.3/source/net) directory, you'll find ~70 subdirectories at the same level — Bluetooth sitting next to bridge sitting next to IPv4 sitting next to netfilter sitting next to CAN bus. Hardware-specific code, protocol families, filtering frameworks, and utility layers all mixed together with no navigable hierarchy. Not all of them apply to any given system. There's no way to say "show me only what's relevant to *my* hardware, running *these* protocols, using *this* filtering approach" and get a clean, scoped view of the code that actually matters.
 
 What you'd want is something like faceted navigation — pick your hardware, it narrows to applicable protocols; pick a protocol, it narrows to related tooling and configuration. A dependency-aware configuration browser instead of a flat directory listing with 30 years of accumulated everything.
 
-That's what Pragma aims to be. Not a replacement for Linux — Linux is extraordinary at what it does — but a layer that makes the configurability that's already there actually usable by the people who need it.
+It's not a replacement for Linux — Linux is extraordinary at what it does. This OS just makes the configurability that's already there actually usable by the people who need it.
 
 ---
 
 ## Status
 
-Early stage. Metal is furthest along — the FSP and AGESA parameter catalog is live, the optimization framework and language are being built. The OS is in design. We're building in public because the people most likely to help are the ones already living in these spaces.
+Overall: Early stages - written on 3/5/2026 and project truly started just two days ago.
 
-If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, we'd love to hear from you.
+Metal is coming along but waiting on collaboration: I've now gotten the FSP and AGESA parameter catalog live with over 39,000 parameters across 29 platforms. But this layer is the gatekept one. Without getting too deep into semantics (the repo for that project tells you more), Intel and AMD are being pushed to be more open but documentation is non-existent and what commentary that does exist is insufficient. Currently working with teams that have deployed coreboot to gather more information from those in the space. All that's really lacking at this point is selecting core parameters and confirming safety, which is something as important as ever when tinkering with power levels and other hardware settings. I'm documenting everything and trying to push the open-source wave already started in recent years by the OCP consortium that got Intel and AMD to finally release the parameters they exposed to manufacturers for tuning. 
+
+If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, I'd love to hear from you and collaborate.
+
+Pragma is furthest along: The base language outline has been defined, the code compiles and runs in tests so far transpiled to C, and it has even transpiled a handful of randomly-chosen third-party C libraries to Pragma then back to C and compiled. The syntax looks good in Pragma from C and vice versa, though a lot more testing is needed. The webpage detailing everything about the language from a syntax reference to a sales pitch is basically done and just needs periodic updating as we move forward. This slice of the project is doing very well in a short period of time.
+
+The OS is being designed: Loading Linux as a driver was something just yesterday figured out, and putting together how it all will look is the current task at hand. Patching together all the work done over the years by the Linux community is not inherently difficult - there's vast documentation and a huge and open community of hobbyists and professionals deploying on serious metal solving real problems day in day out. This isn't a gatekept space like firmware. The focus at the moment is more with the language with the OS design being more of an in-between-the-hours exercise.
 
 ---
 
