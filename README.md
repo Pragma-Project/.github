@@ -172,6 +172,6 @@ If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, we'd love 
 | Repository | Description |
 |---|---|
 | [Pragma-Metal](https://github.com/albazzaztariq/Pragma-Metal) | Hardware optimization tool — firmware parameter tuning via Bayesian optimization |
-| [Intel-FSP-Param-Catalog](https://github.com/albazzaztariq/Intel-FSP-Param-Catalog) | Browsable reference of 37,000+ Intel FSP parameters across 18 platforms |
+| [Firmware-Param-Catalog](https://github.com/albazzaztariq/Firmware-Param-Catalog) | Browsable reference of 39,000+ Intel FSP and AMD AGESA parameters across 29 platforms |
 
 ---
