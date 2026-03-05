@@ -1,6 +1,6 @@
 # Pragma
 
-**Hardware optimization - Language - Operating System.**
+**Hardware Optimization - Language - Operating System.**
 
 Pragma is an attempt to rethink how hardware, software, and firmware are expressed and work together, by making the whole stack acccessible to the people who build and run systems, not handfuls of specialists at each level.
 ---
@@ -141,7 +141,7 @@ That's what Pragma aims to be. Not a replacement for Linux — Linux is extraord
 
 ## Status
 
-Early stage. Metal is furthest along — the FSP parameter catalog is live, the optimization framework is being built. The language and OS are in design. We're building in public because the firmware community has always worked that way, and because the people most likely to help are the ones who already live in this space.
+Early stage. Metal is furthest along — the FSP parameter catalog is live, the optimization framework is being built. The language and OS are in design. We're building in public because the firmware community has always worked that way, and the people most likely to help are the ones already live in this space.
 
 If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, we'd love to hear from you.
 
@@ -155,5 +155,3 @@ If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, we'd love 
 | [Intel-FSP-Param-Catalog](https://github.com/albazzaztariq/Intel-FSP-Param-Catalog) | Browsable reference of 37,000+ Intel FSP parameters across 18 platforms |
 
 ---
-
-*Pragma is a project by [Tariq Albazzaz](https://github.com/albazzaztariq).*
