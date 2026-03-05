@@ -13,8 +13,7 @@ Metal is a firmware optimization tool built on [coreboot](https://coreboot.org),
 
 Instead of figuring out BIOS settings from forum posts and LLM responses, Metal lets someone define safe parameter bounds, then autonomously runs benchmarks across configurations over days or weeks, learning which combinations work best. The result is empirically-discovered firmware tuning.
 
-The companion project **[Intel-FSP-Param-Catalog](https://github.com/albazzaztariq/Intel-FSP-Param-Catalog)** provides a browsable, searchable reference of all 37,000+ FSP parameters across 18 Intel platforms — parsed directly from Intel's published header files. Though not a proper "docs", it serves right now as the best documentation
-publicly available from Intel at this time.
+The companion project **[Firmware-Param-Catalog](https://github.com/albazzaztariq/Firmware-Param-Catalog)** provides a browsable, searchable reference of all 39,000+ FSP and AGESA parameters across 29 Intel/AMD platforms — parsed directly from published header files. Though not a proper "docs", it serves right now as the best documentation publicly available from vendors at this time.
 
 ### 📝 The Language
 
