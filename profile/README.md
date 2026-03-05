@@ -1,8 +1,16 @@
 # **Hardware Optimization - Language - Operating System**
 ---
-Pragma is an attempt to rethink how hardware, software, and firmware are expressed and work together, by making the whole stack acccessible to the people who build and run systems, not handfuls of specialists at each level.
+This is an attempt at making things as deeply configurable as possible.  I'm trying to take hardware optimization, a language for both high-level apps and low-level systems, and an operating system with more knobs that ever easily accessible, and put it into one single solution.  Way beyond overclocking, language that easily converts from and to and is able to be expressed well in each companion language, and an operating system that has userspace apps for changing IPC messaging methodology, process scheduling, I/O handling, network stack, and other things.  Everything linux can do and BSD and others.  All rolled up into one thing that you don't have to hassle an LLM about every time you want to change something.
 
+This all started with Claude Code and me getting back my interests in computers.  I left it when I was a kid but there were a few years from around 11-15 where I got every Sam's, O'Reilly's and other books I could grab from the bookstore.  I pretty much lived on the computer from day to night, stumbling through Linux, reading content on computing, and playing with tools I probably had no business playing with in the seedier days of pockets of backpage communities on IRC, telnet, and the like.  I never got much deeper than building simple programs and more than anything just editing scripts or programs I downloaded, most of the time even then just building binaries.  Later in college I got a formal introduction to programming and had no real issue with the class workloads. But I ended up leaving for years, just doing things at work from time to time.  I used it, so I didn't lose it, but I def didn't use it all the time.  
 
+Then Claude Code came around.  I had seen the chatbots but hadn't really messed much with a coding agent that could write files on disk, run tests, whip up code without copypasta games with chatbots, etc.  I've basically been hooked since then.  There's not a day right now that I'm not on the computer and months have gone by.  
+
+This project is me making an attempt at something bigger and also giving myself a formal, structured, and very large workload that I can chip away at.  The tools available even beyond LLM's is just so much larger in scope than long ago.  I can find UC Berkeley lectures on operating systems - the people who made BSD. I can go to interactive webpages that are essentially free books with exercises, and there's many books with just simple explanations followed by code snippets, instead of huge bibles big enough to be weapons. There's also just a lot more libraries out there to do anything you can imagine, from python's ML stuff to this very website where I can find thousands and thousands of projects with docs and faces and not have to worry so much about seeing a terminal window open and close quickly alongside the new program I thought was going to be a fun experience. Instead of spending hours tying together sparse documentation and getting dunked on in an IRC channel by guys twice my age, I get to take it easy and have tons of resources and my own personal assistant to even mend it all together automatically.
+
+So that's the how I got here from me. The rest of this is from Claude with me doing some light checks. If he's not the poet you had hoped, I can't say much - it's the wizard I need.
+
+---
 Pragma has three parts, and they're designed to work together:
 
 ### 🔧 Metal — Hardware Optimization
@@ -57,7 +65,7 @@ Pragma OS is a configurable kernel that loads Linux as a driver rather than trea
 
 This is a deliberate architectural choice. Every alternative OS in history has faced the same wall: hardware compatibility. Linux has thousands of engineers and decades of work behind its driver ecosystem. Instead of reimplementing all of that (or accepting a fraction of hardware support), Pragma treats the Linux kernel as its I/O subsystem. Linux thinks it owns the hardware. Pragma sits above it and provides its own execution model, memory management, scheduling, and IPC — consuming Linux's capabilities through its existing interfaces without forking or reimplementing any of it.
 
-The result is a thin, configurable skeleton that gives you control over things most operating systems hardwire:
+The result is a thin, configurable skeleton that gives you unified, easy-access control over settings that Linux today offers:
 
 **Process Management & Scheduling**
 - Scheduling algorithm selection and composition (CFS, EDF, priority-based, custom)
@@ -143,7 +151,9 @@ The result is a thin, configurable skeleton that gives you control over things m
 - Kernel live patching policies
 - Audit subsystem configuration
 
-This isn't a theoretical list — these are all real knobs that exist in Linux today, scattered across sysctl, procfs, sysfs, kernel boot parameters, module parameters, and compile-time Kconfig options. Pragma's contribution is making them navigable, composable, and expressible in one coherent language instead of six different configuration mechanisms with six different syntaxes.
+These are all real knobs that exist in Linux today, scattered across sysctl, procfs, sysfs, kernel boot parameters, module parameters, and compile-time Kconfig options. Pragma's contribution is making them navigable, composable, and expressible in one coherent language instead of six different configuration mechanisms with six different syntaxes. 
+
+However, Linux can't hot-swap its own scheduler or memory manager while running without kexec or a reboot in most cases. Some things are runtime-tunable (sysctl), some require a reboot (boot parameters), some require recompilation (Kconfig). Pragma's value would be making ALL of them runtime-configurable through one interface and one language, 
 
 ---
 
