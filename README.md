@@ -1,11 +1,9 @@
 # Pragma
 
-**A hardware optimizer. A language. An operating system.**
+**Hardware optimization - Language - Operating System.**
 
 Pragma is an attempt to rethink how hardware, software, and firmware are expressed and work together, by making the whole stack acccessible to the people who build and run systems, not handfuls of specialists at each level.
 ---
-
-## What is this?
 
 Pragma has three parts, and they're designed to work together:
 
