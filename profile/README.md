@@ -65,11 +65,11 @@ It also bundles safety frameworks that mathematically prove memory safety just l
 
 ### 🖥️ The OS
 
-Pragma OS is a configurable kernel that loads Linux as a driver rather than treating it as the operating system.
+A configurable kernel that loads Linux as a driver rather than treating it as the operating system, and makes data workloads a core target both in performance and UI -not treating it as just another part of general purpose computing.
 
-This is a deliberate architectural choice. Every alternative OS in history has faced the same wall: hardware compatibility. Linux has thousands of engineers and decades of work behind its driver ecosystem. Instead of reimplementing all of that or accepting a fraction of hardware support, Pragma treats the Linux kernel as its I/O subsystem. Linux thinks it owns the hardware. Pragma sits above it and provides its own execution model, memory management, scheduling, and IPC — consuming Linux's capabilities through its existing interfaces without forking or reimplementing any of it. And these things get pushed into userspace with tools that make configurability much more seamless.
+Every alternative OS in history has faced the same wall: hardware compatibility. Linux has thousands of engineers and decades of work behind its driver ecosystem. Instead of reimplementing all of that or accepting a fraction of hardware support, Pragma treats the Linux kernel as its I/O subsystem. In that setup, Linux thinks it owns the hardware, but Pragma sits above it and provides its own execution model, memory management, scheduling, and IPC — consuming Linux's capabilities through its existing interfaces without forking or reimplementing any of it. All these things get pushed into userspace with tools that make configurability much more simple.
 
-The result is a thin, configurable skeleton that gives you one stop, easy-access control Linux today offers:
+The result is a thin, configurable skeleton that gives you one stop, easy-access control that Linux today offers:
 
 **Process Management & Scheduling**
 - Scheduling algorithm selection and composition (CFS, EDF, priority-based, custom)
@@ -165,19 +165,25 @@ Sure, but if you look at something like the Linux kernel's [`net/`](https://elix
 
 What you'd want is something like faceted navigation — pick your hardware, it narrows to applicable protocols; pick a protocol, it narrows to related tooling and configuration. A dependency-aware configuration browser instead of a flat directory listing with 30 years of accumulated everything.
 
-It's not a replacement for Linux — Linux is extraordinary at what it does. This OS just makes the configurability that's already there actually usable by the people who need it.
+It's not a replacement for Linux — Linux is extraordinary at what it does. While Linux is king of the enterprise server world, it is extremely meager in the personal computing space. The second problem this OS tries to solve is the same thing that made Windows dominate general purpose computing where Linux barely makes a mark: accessibility. By making things accessible to typical enterprise teams and smaller organizations without the spend for specialized hires, they could maximize performance through tweaking settings that were a heck of a lot less easy to work through in the past.
 
----
+--
+
+## Platform for Data Work
+
+While Linux has Ubuntu ML server and others, its tools for working with data are spread across many different libraries and not setup by default in many cases, just like the issue earlier with kernel configuration knobs. The idea on this front is to patch these solutions together via a higher abstract layer, creating a toolset that comes default in a single place. The other option that is more work but will also be considered more deeply is rewriting the libraries into a single framework. The downside there that's obvious: every update from each of those components is an update from a different community to a different, specific component among many components. That means rewrites would be needed at least periodically to keep the solution up-to-date with current features and fixes. The downside to the alternative original idea of simply creating an interface for them all is that one library can break them all. In the custom build scenario, the main objective would be to create a *stable* solution, with creating a solution most current would take a backseat. While you could simply downgrade a broken component back to the last stable framework, when that last stable framework was might not be evident if you've updated different packages 10 times, because the error may have a more complex root cause than simply whatever error message of stack trace shows you. In any case, this is as of this writing the only part of the entire project that hasn't been touched beyond basic research barebones design that I've already described. However, this is probably about to accelerate a bit, and I'll give more details why in subsequent updates.
+
+The goal for this is clear: treat data-focused users as first-class citizens. I had enough troubles in the one big data project I did thus far and that was enough to make me realize this adds value for me alone at the very least, if not for others. We're pushing our computers to limits that weren't part of the normal fast-paced acceleration of advancement in computing power over recent years. The AI models and tools available especially in Python that I've seen are making what was the most expensive PC I'd ever bought stutter.
 
 ## Status
 
 Overall: Early stages - written on 3/5/2026 and project truly started just two days ago.
 
-Metal is coming along but waiting on collaboration: I've now gotten the FSP and AGESA parameter catalog live with over 39,000 parameters across 29 platforms. But this layer is the gatekept one. Without getting too deep into semantics (the repo for that project tells you more), Intel and AMD are being pushed to be more open but documentation is non-existent and what commentary that does exist is insufficient. Currently working with teams that have deployed coreboot to gather more information from those in the space. All that's really lacking at this point is selecting core parameters and confirming safety, which is something as important as ever when tinkering with power levels and other hardware settings. I'm documenting everything and trying to push the open-source wave already started in recent years by the OCP consortium that got Intel and AMD to finally release the parameters they exposed to manufacturers for tuning. 
+Metal is coming along but waiting on collaboration: I've now gotten the FSP and AGESA parameter catalog live with over 39,000 parameters across 29 platforms. But this layer is the gatekept one. It's quickly becoming apparent that this slice of the project will be the slowest moving. Without getting too deep into semantics (the repo for that project tells you more), Intel and AMD are being pushed to be more open but documentation is non-existent and what commentary does exist is insufficient. Currently working with teams that have deployed coreboot to gather more information from those in the space. All that's really lacking at this point is selecting core parameters and confirming safety, which is something as important as ever when tinkering with power levels and other hardware settings. I'm documenting everything and trying to push the open-source wave already started in recent years by the OCP consortium that got Intel and AMD to finally release the parameters they expose to computer OEM's for tuning. 
 
 If you work on coreboot, Dasharo, LinuxBoot, or open server firmware, I'd love to hear from you and collaborate.
 
-Pragma is furthest along: The base language outline has been defined, the code compiles and runs in tests so far transpiled to C, and it has even transpiled a handful of randomly-chosen third-party C libraries to Pragma then back to C and compiled. The syntax looks good in Pragma from C and vice versa, though a lot more testing is needed. The webpage detailing everything about the language from a syntax reference to a sales pitch is basically done and just needs periodic updating as we move forward. This slice of the project is doing very well in a short period of time.
+Pragma's language is furthest along: The base language outline has been defined, the code compiles and runs in tests so far transpiled to C, and it has even transpiled a handful of randomly-chosen third-party C libraries to Pragma then back to C and compiled. The syntax looks good in Pragma from C and vice versa, though a lot more testing is needed. The webpage detailing everything about the language from a syntax reference to a sales pitch is basically done and just needs periodic updating as we move forward. This slice of the project is doing very well in a short period of time.
 
 The OS is being designed: Loading Linux as a driver was something just yesterday figured out, and putting together how it all will look is the current task at hand. Patching together all the work done over the years by the Linux community is not inherently difficult - there's vast documentation and a huge and open community of hobbyists and professionals deploying on serious metal solving real problems day in day out. This isn't a gatekept space like firmware. The focus at the moment is more with the language with the OS design being more of an in-between-the-hours exercise.
 
@@ -188,6 +194,6 @@ The OS is being designed: Loading Linux as a driver was something just yesterday
 | Repository | Description |
 |---|---|
 | [Pragma-Metal](https://github.com/albazzaztariq/Pragma-Metal) | Hardware optimization tool — firmware parameter tuning via Bayesian optimization |
-| [Firmware-Param-Catalog](https://github.com/albazzaztariq/Firmware-Param-Catalog) | Browsable reference of 39,000+ Intel FSP and AMD AGESA parameters across 29 platforms |
+| [Firmware-Param-Catalog](https://github.com/albazzaztariq/Firmware-Param-Catalog) | Browsable reference of 39,000+ Intel FSP and AMD AGESA parameters across 29 platforms | 
 
 ---
